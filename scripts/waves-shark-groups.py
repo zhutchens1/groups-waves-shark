@@ -44,11 +44,14 @@ def g3(catalog, sbar, floor, params, gd_fit_bins=None, starting_id=None, plot=Fa
     vproj_offs = params['vproj_offs']    
     gd_rproj_mult = params['gd_rproj_mult']    
     gd_vproj_mult = params['gd_vproj_mult']    
-    gd_vproj_offs = params['gd_vproj_offs']    
+    gd_vproj_offs = params['gd_vproj_offs']
+    h23par_rproj = [3.06e-1, 4.16e-1]
+    h23par_vproj = [3.45e2, 1.7e-1]
 
     catalog_g3obj = g3gf(catalog.ra, catalog.dec, catalog.redshift_observed, catalog.mag_abs_r_SDSS, floor, H0, Om0, Ode0, precision=np.float64)
     fofid = catalog_g3obj.giantOnlyFOF(bperp, blos, fof_sep=sbar)
-    catalog_g3obj.deriveGiantCalibrations(rproj_fit_multiplier=rproj_mult, vproj_fit_multiplier=vproj_mult, vproj_fit_offset=vproj_offs, n_bootstraps=1000)
+    catalog_g3obj.deriveGiantCalibrations(rproj_fit_multiplier=rproj_mult, vproj_fit_multiplier=vproj_mult, vproj_fit_offset=vproj_offs, rproj_fit_params=h23par_vproj,\
+        vproj_fit_params=h23par_vproj)
     if plot: 
         catalog_g3obj.plotGiantGroupBoundaries(show=True, rproj_ylim=1.5, rproj_xlim=30, vproj_xlim=30,  vproj_ylim=1500, savepath=handle+'-giantcal.png')
     catalog_g3obj.giantOnlyMerging()
