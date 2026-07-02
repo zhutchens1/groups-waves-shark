@@ -67,13 +67,14 @@ def get_metrics_by_halo(grpid, haloid, galproperty):
     group_gals = np.split(gal_inds[order_g], np.cumsum(Ng_all)[:-1])
 
     Ns = np.zeros(unique_haloIDs.size)
-    Ng = np.ones(unique_haloIDs.size)
+    Ng = np.ones(unique_haloIDs.size) * np.nan
     matches = np.zeros(unique_haloIDs.size) - 99.
     for ii, gals in tqdm(enumerate(halo_gals),total=len(halo_gals)):
         matched_grpid = grpid[gals]
-        if (matched_grpid < 0).all():
+        valid = (matched_grpid >= 0)
+        if not valid.any():
             continue
-        gg = mode(matched_grpid,galproperty[gals])
+        gg = mode(matched_grpid[valid],galproperty[gals][valid])
         gg_idx = np.searchsorted(unique_grpIDs, gg)
         Ns[ii] = np.sum(matched_grpid == gg)
         Ng[ii] = group_gals[gg_idx].size
